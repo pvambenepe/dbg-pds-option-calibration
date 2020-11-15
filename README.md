@@ -58,5 +58,6 @@ The development of those technics risks putting at risk the business model of le
 
 Asymmetrical information can be detected because they will ultimately lead to a sudden shift of a parameter like the spot price, the volatility or the dividend yield.
 
-The goal here is to spot signals in the trading pattern that will alert such actor that something is fishy
+The goal here is to spot signals in the trading pattern that will alert such actor that something is fishy.
+The code of the Machine Learning code used to achieve that will be madle public in a separate git at a later date.
 
