@@ -53,11 +53,11 @@ The output of this code is are pandas dataframes giving time series of the follo
 
 My goal is to use this output to detect asymmetrical information in stock options market.
 
-Asymmetrical information can stem from criminal behaviours like insider trading but also from an hedge given by advanced research from actors deploying extensive means to get an hedge like the use of mobile phone data, private polls or other types of intelligence gathering along with machine learning treatment of those data.
-The development of those technics risks putting at risk the business model of less specialized actors including market makers thus jeopardizing the structure of the market.
+Asymmetrical information can stem from criminal behaviours like insider trading but also from an edge given by advanced research from actors deploying extensive means like the use of mobile phone data, private polls or other types of intelligence gathering along with machine learning treatment of those data.
+The development of those technics risks undermining the business model of less specialized actors including market makers thus jeopardizing the structure of the market.
 
 Asymmetrical information can be detected because they will ultimately lead to a sudden shift of a parameter like the spot price, the volatility or the dividend yield.
 
 The goal here is to spot signals in the trading pattern that will alert such actor that something is fishy.
-The code of the Machine Learning code used to achieve that will be madle public in a separate git at a later date.
+The code of the Machine Learning code used to achieve that will be made public in a separate git at a later date.
 
