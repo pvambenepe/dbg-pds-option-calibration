@@ -4,12 +4,12 @@ Shows how to calibrate a simple parametric volatility surface using intraday dat
 
 # Context
 
-In order to use machine learning technics you first need to gather large scale, clean and preferably stationary data.
+In order to use machine learning technics, you first need to gather large scale, clean and stationary data.
 Few open source AI projects tackle options market precisely for lack of data and the difficulty of putting together all stages of data transformation from raw intraday prices to refined parameters time series.
 
 Data used here have been made public by Deutsche Boerse as part of their PDS initative (https://github.com/Deutsche-Boerse/dbg-pds).
 
-For the retreiving of these data, I have used bits of code from another git that you can find here : https://github.com/Originate/dbg-pds-tensorflow-demo
+For the retreiving of these raw data, I have used bits of code from another git that you can find here : https://github.com/Originate/dbg-pds-tensorflow-demo
 
 My code, written in Python, shows how to calibrate a volatility surface using only trade data sampled with 1 minute intervals.
 
@@ -20,12 +20,12 @@ This code works for liquid underlings like the Eurostoxx50 index but also for le
 
 I decided to clusterize consecutive trades by groups containing at least 5 calls and 5 puts.
 
-The idea here is to be able to start each calibration with a calibration of the forward to spot ratio. This will prevent any wide miscalibration resulting from a sudden change of this ratio following either a dividend payment or a change in the dividend forecast.
+The idea here is to be able to perform a calibration of the forward-to-spot ratio prior to the calibration of volatility parameters. This will prevent any miscalibration resulting from a sudden change of this ratio following either a dividend payment or a change in the dividend forecast.
 
-Hence, the first operation will consist in performing a WLS (weighted OLS) mono-regression to determine which forward to spot ratio fits best the n trades in the cluster.
+For that, we will perform a WLS (weighted OLS) mono-regression to determine which forward to spot ratio fits best the n trades in the cluster.
 The weights are used to balance the positive and negative delta (call and puts) in the cluster.
 
-Once this is done, we want to see how to alter volatility parameters in order to best fit the trade prices of the cluster starting with the parameters of the previous one. This is done by using Elastic Net regression in order to give more rigidity to parameters with less variability like smile and convexity :
+Once this is done, we want to see how to alter volatility parameters in order to best fit the trade prices of the cluster. We will be starting with the parameters of the previous cluster and the associated sensitivities (sensi_vega, sensi_smile...). This is done by using an Elastic Net Regression rather than OLS in order to give more rigidity to parameters with less variability like smile and convexity :
 X = Sensivivity vector * standard_dev_of_parameter
 Y = Traded Price - Actual Price
 
@@ -42,8 +42,8 @@ Traded_price_opt2 - Model_price_opt2_with param(t-1)
 Traded_price_opt3 - Model_price_opt3_with param(t-1)
 ...
 
-We look for a vector alpha alpha to minimize (||Y-X * alpha||2 + epsilon1*||alpha||1 + epsilon2*||alpha||2   (see elastic net regression)
-the result alpha gives the move to apply to paramleters :
+We look for a vector alpha which minimizes: ||Y-X * alpha||2 + epsilon1*||alpha||1 + epsilon2*||alpha||2   (see elastic net regression)
+The result gives the move to apply to paramleters :
 ATF(t) = ATF(t-1) + alpha[0]*std_vega
 SMI(t) = SMI(t-1) + alpha[1]*std_vega
 CVX(t) = CVX(t-1) + alpha[0]*std_vega
@@ -55,10 +55,10 @@ Each underlying and maturity are treated separatly.
 
 Every trade is priced only once along with options sensitivity on spot and volatility parameters. This pricing uses paramters obtained with the preceding cluster. First order extrapolation along Spot, ATF, SMI and CVX sensitivities is used thereafter for the calibration of the cluster.
 
-The pricers used are a european Black and Scholes pricer with continuous dividend yield and a binomial tree for american options also with a continuous dividend yield for american options abovve a certain threshold of dividenyield. 
-Even when using a binomial tree, the pricing of american options is unprecise due to the lack of data regarding the exact dividend ex-date. In order to prevent too big an impact from that, we filter out calls with a delta under 50% (and puts with delta over -70% in order to keep only vol relevant options).
+The pricers used are a european Black and Scholes pricer with continuous dividend yield and a binomial tree for american options also with a continuous dividend yield for american options above a certain threshold of dividenyield (we use the european BS pricer under this threshold for speed purposes). 
+Even when using a binomial tree, the pricing of american options is unprecise due to the lack of data regarding the exact dividend ex-date. In order to prevent too big an impact from that, we filter out calls with a delta over 50%.
 
-The volatility model is a simple polynamial fit a degree 2.
+The volatility model is a simple 2nd degree polynamial equiation on moneyness.
 Sigma(K, T) = ATF(T) - SMI(T) * moneyness +  CVX(T) * moneyness²
 with moneyness = ln(K/F)
 K = Strike
@@ -68,17 +68,18 @@ F = Forward
 # Output
 
 The output of this code is pandas dataframes giving time series of the following calibrated parameters : ATF, SMI, CVX, divyield along with traded volumes.
+Graphs of these output are given in the Output folder.
 
 
 # Exploitation
 
-My goal is to use this output to detect asymmetrical information in stock options market.
+My goal is to use this output to detect events of asymmetrical information in stock options market.
 
-Asymmetrical information can stem from criminal behaviours like insider trading but also from an edge given by advanced research from actors deploying extensive means like the use of mobile phone data, private polls or other types of intelligence gathering along with machine learning treatment of those data.
+Asymmetrical information can stem from criminal behaviours like insider trading but also from an edge given by advanced research to actors deploying extensive means like the use of mobile phone data, private polls or other types of intelligence gathering along with machine learning treatment of those data.
 The development of those technics risks undermining the business model of less specialized actors including market makers thus jeopardizing the structure of the market.
 
-Asymmetrical information can be detected because they will ultimately lead to a sudden shift of a parameter like the spot price, the volatility or the dividend yield.
+Asymmetrical information can be detected because they will ultimately lead to a dramatic shift of a parameter such as the spot price, the volatility or the dividend yield.
 
-The goal here is to spot signals in the trading pattern that will alert such actor that something is fishy.
-The code of the Machine Learning code used to achieve that will be made public in a separate git at a later date.
+The goal here is to identify signals in the trading pattern that will alert liquidity providers that something is fishy.
+The Machine Learning code used to achieve that will be made public in a separate git at a later date.
 
