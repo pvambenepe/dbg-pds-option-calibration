@@ -4,12 +4,12 @@ Shows how to calibrate a simple parametric volatility surface using intraday dat
 
 # Context
 
-In order to use machine learning technics, you first need to gather large scale, clean and stationary data.
+In order to use machine learning techniques, you first need to gather large scale, clean and stationary data.
 Few open source AI projects tackle options market precisely for lack of data and the difficulty of putting together all stages of data transformation from raw intraday prices to refined parameters time series.
 
 Data used here have been made public by Deutsche Boerse as part of their PDS initative : https://github.com/Deutsche-Boerse/dbg-pds
 
-For the retreiving of these raw data, I have used bits of code from another git that you can find here : https://github.com/Originate/dbg-pds-tensorflow-demo
+To retreive these raw data, I have used bits of code from another git that you can find here : https://github.com/Originate/dbg-pds-tensorflow-demo
 
 My code, written in Python, shows how to calibrate a volatility surface using only trade data sampled with 1 minute intervals.
 
@@ -24,10 +24,6 @@ The idea here is to be able to first perform a calibration of the forward-to-spo
 
 For that, we will perform a WLS (weighted OLS) to determine which forward-to-spot ratio fits best the n trades in the cluster.
 The weights are used to balance the positive and negative delta (call and puts) in the cluster.
-
-X = Sensivivity vector
-
-Y = Traded Price - Actual Price
 
 With one row per trade in the cluster so :
 
@@ -53,13 +49,10 @@ Traded_price_opt3 - Model_price_opt3_with_param(t-1)
 the result of the regression gives the shift to be applied to the forward-to-spot ratio (cf code get_new_fwd_ratio in the Fitting class)
 
 
-Once this is done, we want to see how to alter volatility parameters in order to best fit the trade prices of the cluster. We will be starting with the parameters of the previous cluster and the associated sensitivities (sensi_vega, sensi_smile...). This is done by using an Elastic Net Regression rather than OLS in order to give more rigidity to parameters with less variability like smile and convexity :
+Once this is done, we want to see how to alter volatility parameters in order to best fit the traded prices of the cluster. We will be starting by pricing the trades with the parameters of the previous cluster along with the associated sensitivities (sensi_vega, sensi_smile...). 
+We will then be using an Elastic Net Regression rather than OLS in order to give more rigidity to parameters with less variability like smile and convexity 
+Each row corresponds to a trade in the cluster so :
 
-X = Sensivivity vector * standard_dev_of_parameter
-
-Y = Traded Price - Actual Price
-
-With one row per trade in the cluster so :
 X = 
 sensi_vega_opt1 * std_vega,  sensi_smile_opt1 * std smile,  sensi_convex_opt1 * std_convex
 
