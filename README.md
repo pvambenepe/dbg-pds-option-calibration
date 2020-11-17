@@ -89,8 +89,8 @@ Each underlying and maturity are treated separatly.
 
 Every trade is priced only once along with options sensitivity on spot and volatility parameters. This pricing uses paramters obtained with the preceding cluster. First order extrapolation along Spot, ATF, SMI and CVX sensitivities is used thereafter for the calibration of the cluster.
 
-The pricers used are a european Black and Scholes pricer with continuous dividend yield and a binomial tree for american options also with a continuous dividend yield for american options above a certain threshold of dividenyield (we use the european BS pricer under this threshold for speed purposes). 
-Even when using a binomial tree, the pricing of american options is unprecise due to the lack of data regarding the exact dividend ex-date. In order to prevent too big an impact from that, we filter out calls with a delta over 45%.
+The pricers used are a european Black and Scholes pricer with continuous dividend yield and a binomial tree for american options also with a continuous dividend yield for american options above a certain threshold of dividenyield (we use the european closed formula pricer under this threshold for speed purposes). 
+Even when using a binomial tree, the pricing of american options is unprecise due to the lack of data regarding the exact dividend ex-date. In order to prevent too big an impact from that, we filter out calls with a delta over X%.
 
 The volatility model is a simple 2nd degree polynamial equation on moneyness.
 Sigma(K, T) = ATF(T) - SMI(T) * moneyness +  CVX(T) * moneyness²
