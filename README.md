@@ -25,19 +25,26 @@ The idea here is to be able to first perform a calibration of the forward-to-spo
 For that, we will perform a WLS (weighted OLS) to determine which forward-to-spot ratio fits best the n trades in the cluster.
 The weights are used to balance the positive and negative delta (call and puts) in the cluster.
 X = Sensivivity vector
+
 Y = Traded Price - Actual Price
 
 With one row per trade in the cluster so :
 X = 
 sensi_delta_opt1
+
 sensi_delta_opt2
+
 sensi_delta_opt3
+
 ...
 
 Y = 
 Traded_price_opt1 - Model_price_opt1_with_param(t-1)
+
 Traded_price_opt2 - Model_price_opt2_with_param(t-1)
+
 Traded_price_opt3 - Model_price_opt3_with_param(t-1)
+
 ...
 
 the result of the regression gives the shift to be applied to the forward-to-spot ratio (cf code get_new_fwd_ratio in the Fitting class)
@@ -50,20 +57,28 @@ Y = Traded Price - Actual Price
 With one row per trade in the cluster so :
 X = 
 sensi_vega_opt1 * std_vega,  sensi_smile_opt1 * std smile,  sensi_convex_opt1 * std_convex
+
 sensi_vega_opt2 * std_vega,  sensi_smile_opt2 * std smile,  sensi_convex_opt2 * std_convex
+
 sensi_vega_opt3 * std_vega,  sensi_smile_opt3 * std smile,  sensi_convex_opt3 * std_convex
+
 ...
 
 Y = 
 Traded_price_opt1 - Model_price_opt1_with_param(t-1)
+
 Traded_price_opt2 - Model_price_opt2_with_param(t-1)
+
 Traded_price_opt3 - Model_price_opt3_with_param(t-1)
+
 ...
 
 We look for a vector alpha which minimizes: ||Y-X * alpha||2 + epsilon1*||alpha||1 + epsilon2*||alpha||2   (see elastic net regression)
 The result gives the move to apply to paramleters :
 ATF(t) = ATF(t-1) + alpha[0]*std_vega
+
 SMI(t) = SMI(t-1) + alpha[1]*std_vega
+
 CVX(t) = CVX(t-1) + alpha[0]*std_vega
 
 cf code (cf code get_new_vols_params in the Fitting class)
@@ -96,7 +111,7 @@ Graphs of these output are given in the Output folder.
 My goal is to use this output to detect events of asymmetrical information in stock options market.
 
 Asymmetrical information can stem from criminal behaviours like insider trading but also from an edge given by advanced research to actors deploying extensive means like the use of mobile phone data, private polls or other types of intelligence gathering along with machine learning treatment of those data.
-The development of those technics risks undermining the business model of less specialized actors, including market makers, thus jeopardizing the structure of the market.
+The development of those techniques risks undermining the business model of less specialized actors, including market makers, thus jeopardizing the structure of the market.
 
 Asymmetrical information can be detected because they will ultimately lead to a dramatic shift of a parameter such as the spot price, the volatility or the dividend yield.
 
