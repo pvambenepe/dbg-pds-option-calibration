@@ -24,11 +24,13 @@ The idea here is to be able to first perform a calibration of the forward-to-spo
 
 For that, we will perform a WLS (weighted OLS) to determine which forward-to-spot ratio fits best the n trades in the cluster.
 The weights are used to balance the positive and negative delta (call and puts) in the cluster.
+
 X = Sensivivity vector
 
 Y = Traded Price - Actual Price
 
 With one row per trade in the cluster so :
+
 X = 
 sensi_delta_opt1
 
@@ -39,6 +41,7 @@ sensi_delta_opt3
 ...
 
 Y = 
+
 Traded_price_opt1 - Model_price_opt1_with_param(t-1)
 
 Traded_price_opt2 - Model_price_opt2_with_param(t-1)
@@ -51,7 +54,9 @@ the result of the regression gives the shift to be applied to the forward-to-spo
 
 
 Once this is done, we want to see how to alter volatility parameters in order to best fit the trade prices of the cluster. We will be starting with the parameters of the previous cluster and the associated sensitivities (sensi_vega, sensi_smile...). This is done by using an Elastic Net Regression rather than OLS in order to give more rigidity to parameters with less variability like smile and convexity :
+
 X = Sensivivity vector * standard_dev_of_parameter
+
 Y = Traded Price - Actual Price
 
 With one row per trade in the cluster so :
@@ -75,6 +80,7 @@ Traded_price_opt3 - Model_price_opt3_with_param(t-1)
 
 We look for a vector alpha which minimizes: ||Y-X * alpha||2 + epsilon1*||alpha||1 + epsilon2*||alpha||2   (see elastic net regression)
 The result gives the move to apply to paramleters :
+
 ATF(t) = ATF(t-1) + alpha[0]*std_vega
 
 SMI(t) = SMI(t-1) + alpha[1]*std_vega
