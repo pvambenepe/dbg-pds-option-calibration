@@ -72,15 +72,15 @@ Traded_price_opt3 - Model_price_opt3_with_param(t-1)
 ...
 
 We look for a vector alpha which minimizes: ||Y-X * alpha||2 + epsilon1*||alpha||1 + epsilon2*||alpha||2   (see elastic net regression)
-The result gives the move to apply to paramleters :
+The result gives the move to apply to parameters :
 
 ATF(t) = ATF(t-1) + alpha[0]*std_vega
 
-SMI(t) = SMI(t-1) + alpha[1]*std_vega
+SMI(t) = SMI(t-1) + alpha[1]*std_smile
 
-CVX(t) = CVX(t-1) + alpha[0]*std_vega
+CVX(t) = CVX(t-1) + alpha[2]*std_cvx
 
-cf code (cf code get_new_vols_params in the Fitting class)
+(cf code get_new_vols_params in the Fitting class)
 
 
 # Simplifying choices
