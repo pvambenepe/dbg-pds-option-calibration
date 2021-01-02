@@ -28,23 +28,22 @@ The weights are used to balance the positive and negative delta (call and puts) 
 With one row per trade in the cluster so :
 
 X = 
-sensi_delta_opt1
+[sensi_delta_opt1
 
 sensi_delta_opt2
 
 sensi_delta_opt3
 
-...
+...]
 
 Y = 
-
-Traded_price_opt1 - Model_price_opt1_with_param(t-1)
+[Traded_price_opt1 - Model_price_opt1_with_param(t-1)
 
 Traded_price_opt2 - Model_price_opt2_with_param(t-1)
 
 Traded_price_opt3 - Model_price_opt3_with_param(t-1)
 
-...
+...]
 
 the result of the regression gives the shift to be applied to the forward-to-spot ratio (cf code get_new_fwd_ratio in the Fitting class)
 
@@ -54,7 +53,7 @@ We will then be using an Elastic Net Regression rather than OLS in order to give
 Each row corresponds to a trade in the cluster so :
 
 X = 
-sensi_vega_opt1 * std_vega,  sensi_smile_opt1 * std smile,  sensi_convex_opt1 * std_convex
+[sensi_vega_opt1 * std_vega,  sensi_smile_opt1 * std smile,  sensi_convex_opt1 * std_convex
 
 sensi_vega_opt2 * std_vega,  sensi_smile_opt2 * std smile,  sensi_convex_opt2 * std_convex
 
@@ -69,7 +68,7 @@ Traded_price_opt2 - Model_price_opt2_with_param(t-1)
 
 Traded_price_opt3 - Model_price_opt3_with_param(t-1)
 
-...
+...]
 
 We look for a vector alpha which minimizes: ||Y-X * alpha||2 + epsilon1*||alpha||1 + epsilon2*||alpha||2   (see elastic net regression)
 The result gives the move to apply to parameters :
@@ -115,5 +114,6 @@ The development of those techniques risks undermining the business model of less
 Asymmetrical information can be detected because they will ultimately lead to a dramatic shift of a parameter such as the spot price, the volatility or the dividend yield.
 
 The goal here is to identify signals in the trading pattern that will alert liquidity providers that something is fishy.
-The Machine Learning code used to achieve that will be made public in a separate git at a later date.
+The building of neat time series and the Machine Learning code used to achieve that is available in the following git :
+https://github.com/pvambenepe/Detecting-asymmetric-information-with-dbg-pds
 
